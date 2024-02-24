@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/layout/registration/registration_screen.dart';
 import 'package:todo_app/shared/constants.dart';
 import 'package:todo_app/shared/reusable_components/custom_form_field.dart';
 import 'package:todo_app/style/app_colors.dart';
@@ -103,6 +104,24 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     )
                   ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("Don't Have An Account?",style: TextStyle(
+                        fontSize: 18
+                      ),),
+                      TextButton(
+                        onPressed: (){
+                          Navigator.pushNamed(context, RegistrationScreen.route);
+                        },
+                        child: const Text("Sign Up",style: TextStyle(
+                          color: AppColors.primaryLightColor,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold
+                        ),),
+                      )
+                    ],
+                  )
                 ],
               ),
             ),
