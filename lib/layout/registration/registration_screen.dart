@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/layout/home/home_screen.dart';
 import 'package:todo_app/shared/constants.dart';
 import 'package:todo_app/shared/reusable_components/custom_form_field.dart';
 import 'package:todo_app/style/app_colors.dart';
@@ -137,7 +138,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     ),
                     onPressed: (){
                       if(formKey.currentState?.validate()??false){
-
+                        Navigator.pushReplacementNamed(context, HomeScreen.route);
                       }
                     },
                     child: const Text("Register",style: TextStyle(

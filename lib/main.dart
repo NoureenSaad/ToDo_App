@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/layout/home/home_screen.dart';
 import 'package:todo_app/layout/login/login_screen.dart';
 import 'package:todo_app/layout/registration/registration_screen.dart';
 import 'package:todo_app/style/app_theme.dart';
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
       routes: {
         LoginScreen.route:(_)=>LoginScreen(),
         RegistrationScreen.route:(_)=>RegistrationScreen(),
+        HomeScreen.route:(_)=>HomeScreen(),
       },
       initialRoute: LoginScreen.route,
     );

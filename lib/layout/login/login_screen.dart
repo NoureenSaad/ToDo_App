@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/layout/home/home_screen.dart';
 import 'package:todo_app/layout/registration/registration_screen.dart';
 import 'package:todo_app/shared/constants.dart';
 import 'package:todo_app/shared/reusable_components/custom_form_field.dart';
@@ -95,7 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                       onPressed: (){
                         if(formKey.currentState?.validate()??false){
-
+                          Navigator.pushReplacementNamed(context, HomeScreen.route);
                         }
                       },
                     child: const Text("Login",style: TextStyle(
