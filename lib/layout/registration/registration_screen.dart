@@ -1,6 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_app/layout/home/home_screen.dart';
 import 'package:todo_app/shared/constants.dart';
+import 'package:todo_app/shared/dialog_utils.dart';
+import 'package:todo_app/shared/firebase_auth_error_codes.dart';
 import 'package:todo_app/shared/reusable_components/custom_form_field.dart';
 import 'package:todo_app/style/app_colors.dart';
 
@@ -137,9 +141,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         backgroundColor: AppColors.primaryLightColor
                     ),
                     onPressed: (){
-                      if(formKey.currentState?.validate()??false){
-                        Navigator.pushReplacementNamed(context, HomeScreen.route);
-                      }
+                      createNewUser();
                     },
                     child: const Text("Register",style: TextStyle(
                         color: Colors.white,
@@ -153,5 +155,51 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         ),
       ),
     );
+  }
+
+  void createNewUser() async{
+    if(formKey.currentState?.validate()??false){
+      DialogUtils.showLoadingDialog(context);
+      try{
+        UserCredential credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+            email: emailController.text,
+            password: passwordController.text
+        );
+        DialogUtils.hideLoadingDialog(context);
+        DialogUtils.showMessage(
+          context: context,
+          message: "Registered Successfully",
+          positiveText: "OK",
+          positivePress: (){
+            Navigator.pushReplacementNamed(context, HomeScreen.route);
+          }
+        );
+      } on FirebaseAuthException catch(e){
+        DialogUtils.hideLoadingDialog(context);
+        if (e.code == FirebaseAuthErrorCodes.weakPassword) {
+          print('The password provided is too weak.');
+          DialogUtils.showMessage(
+            context: context,
+            message: "Password Is Weak",
+            positiveText: "Try Again",
+            positivePress: (){
+              DialogUtils.hideLoadingDialog(context);
+            },
+          );
+        } else if (e.code == FirebaseAuthErrorCodes.emailAlreadyInUse) {
+          print('The account already exists for that email.');
+          DialogUtils.showMessage(
+            context: context,
+            message: "Email Is Already Exist",
+            positiveText: "Try Again",
+            positivePress: (){
+              DialogUtils.hideLoadingDialog(context);
+            },
+          );
+        }
+      }
+
+
+    }
   }
 }

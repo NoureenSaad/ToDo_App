@@ -1,7 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_app/layout/home/home_screen.dart';
 import 'package:todo_app/layout/registration/registration_screen.dart';
 import 'package:todo_app/shared/constants.dart';
+import 'package:todo_app/shared/dialog_utils.dart';
+import 'package:todo_app/shared/firebase_auth_error_codes.dart';
 import 'package:todo_app/shared/reusable_components/custom_form_field.dart';
 import 'package:todo_app/style/app_colors.dart';
 
@@ -95,9 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       backgroundColor: AppColors.primaryLightColor
                     ),
                       onPressed: (){
-                        if(formKey.currentState?.validate()??false){
-                          Navigator.pushReplacementNamed(context, HomeScreen.route);
-                        }
+                        Login();
                       },
                     child: const Text("Login",style: TextStyle(
                       color: Colors.white,
@@ -129,5 +130,51 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
     );
+  }
+
+  void Login() async{
+    if(formKey.currentState?.validate()??false){
+      DialogUtils.showLoadingDialog(context);
+      try{
+        UserCredential credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+            email: emailController.text,
+            password: passwordController.text
+        );
+        DialogUtils.hideLoadingDialog(context);
+        DialogUtils.showMessage(
+            context: context,
+            message: "Login Successfully",
+            positiveText: "OK",
+            positivePress: (){
+              Navigator.pushReplacementNamed(context, HomeScreen.route);
+            }
+        );
+      }on FirebaseAuthException catch(e){
+        DialogUtils.hideLoadingDialog(context);
+        if (e.code == FirebaseAuthErrorCodes.userNotFound) {
+          print('No user found for that email.');
+          DialogUtils.showMessage(
+            context: context,
+            message: "User Not Found",
+            positiveText: "Try Again",
+            positivePress: (){
+              DialogUtils.hideLoadingDialog(context);
+            },
+          );
+        } else if (e.code == FirebaseAuthErrorCodes.wrongPassword) {
+          print('Wrong password provided for that user.');
+          DialogUtils.showMessage(
+            context: context,
+            message: "Wrong Password",
+            positiveText: "Try Again",
+            positivePress: (){
+              DialogUtils.hideLoadingDialog(context);
+            },
+          );
+        }
+      }
+    }
+
+
   }
 }
