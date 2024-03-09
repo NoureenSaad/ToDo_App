@@ -5,6 +5,7 @@ import 'package:todo_app/layout/home/home_screen.dart';
 import 'package:todo_app/shared/constants.dart';
 import 'package:todo_app/shared/dialog_utils.dart';
 import 'package:todo_app/shared/firebase_auth_error_codes.dart';
+import 'package:todo_app/shared/remote/firebase/firestore_helper.dart';
 import 'package:todo_app/shared/reusable_components/custom_form_field.dart';
 import 'package:todo_app/style/app_colors.dart';
 
@@ -164,6 +165,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         UserCredential credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
             email: emailController.text,
             password: passwordController.text
+        );
+        FirestoreHelper.AddUser(
+            credential.user!.uid,
+            emailController.text,
+            fullNameController.text
         );
         DialogUtils.hideLoadingDialog(context);
         DialogUtils.showMessage(
