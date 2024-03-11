@@ -27,4 +27,10 @@ class AuthDataProvider extends ChangeNotifier{
       print(e);
     }
   }
+
+  Future<void> SignOut() async{
+    firebaseUserAuth = null;
+    databaseUser = null;
+    await FirebaseAuth.instance.signOut();
+  }
 }
