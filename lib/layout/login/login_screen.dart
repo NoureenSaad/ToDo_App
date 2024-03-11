@@ -1,12 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_app/layout/home/home_screen.dart';
 import 'package:todo_app/layout/registration/registration_screen.dart';
 import 'package:todo_app/shared/constants.dart';
 import 'package:todo_app/shared/dialog_utils.dart';
 import 'package:todo_app/shared/firebase_auth_error_codes.dart';
+import 'package:todo_app/shared/providers/auth_data_provider.dart';
+import 'package:todo_app/shared/remote/firebase/firestore_helper.dart';
 import 'package:todo_app/shared/reusable_components/custom_form_field.dart';
 import 'package:todo_app/style/app_colors.dart';
+import 'package:todo_app/model/firestore_user.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String route = "LoginScreen";
@@ -133,6 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void Login() async{
+    AuthDataProvider provider = Provider.of<AuthDataProvider>(context,listen: false);
     if(formKey.currentState?.validate()??false){
       DialogUtils.showLoadingDialog(context);
       try{
@@ -140,13 +145,15 @@ class _LoginScreenState extends State<LoginScreen> {
             email: emailController.text,
             password: passwordController.text
         );
+       FirestoreUser? user = await FirestoreHelper.GetUser(credential.user!.uid);
+       provider.setUsers(credential.user, user);
         DialogUtils.hideLoadingDialog(context);
         DialogUtils.showMessage(
             context: context,
             message: "Login Successfully",
             positiveText: "OK",
             positivePress: (){
-              Navigator.pushReplacementNamed(context, HomeScreen.route);
+              Navigator.pushNamedAndRemoveUntil(context, HomeScreen.route,(route)=>false);
             }
         );
       }on FirebaseAuthException catch(e){

@@ -1,10 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_app/layout/home/home_screen.dart';
+import 'package:todo_app/model/firestore_user.dart';
 import 'package:todo_app/shared/constants.dart';
 import 'package:todo_app/shared/dialog_utils.dart';
 import 'package:todo_app/shared/firebase_auth_error_codes.dart';
+import 'package:todo_app/shared/providers/auth_data_provider.dart';
 import 'package:todo_app/shared/remote/firebase/firestore_helper.dart';
 import 'package:todo_app/shared/reusable_components/custom_form_field.dart';
 import 'package:todo_app/style/app_colors.dart';
@@ -159,6 +161,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   }
 
   void createNewUser() async{
+    AuthDataProvider provider = Provider.of<AuthDataProvider>(context,listen: false);
     if(formKey.currentState?.validate()??false){
       DialogUtils.showLoadingDialog(context);
       try{
@@ -177,7 +180,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           message: "Registered Successfully",
           positiveText: "OK",
           positivePress: (){
-            Navigator.pushReplacementNamed(context, HomeScreen.route);
+            provider.setUsers(credential.user, FirestoreUser(
+                id: credential.user!.uid,
+                fullName: fullNameController.text,
+                email: emailController.text));
+            Navigator.pushNamedAndRemoveUntil(context, HomeScreen.route,(route)=>false);
           }
         );
       } on FirebaseAuthException catch(e){

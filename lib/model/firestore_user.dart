@@ -1,11 +1,11 @@
-class User{
+class FirestoreUser{
   String? id;
   String? fullName;
   String? email;
 
-  User({required this.id,required this.fullName,required this.email});
+  FirestoreUser({required this.id,required this.fullName,required this.email});
 
-  User.fromFirestore(Map<String, dynamic> data){
+  FirestoreUser.fromFirestore(Map<String, dynamic> data){
     id = data['id'];
     fullName = data['fullname'];
     email = data['email'];
