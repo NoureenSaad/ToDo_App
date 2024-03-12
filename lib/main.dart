@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_app/firebase_options.dart';
 import 'package:todo_app/layout/home/home_screen.dart';
+import 'package:todo_app/layout/home/provider/home_provider.dart';
 import 'package:todo_app/layout/login/login_screen.dart';
 import 'package:todo_app/layout/registration/registration_screen.dart';
 import 'package:todo_app/layout/splash/splash_screen.dart';
@@ -35,7 +36,9 @@ class MyApp extends StatelessWidget {
       routes: {
         LoginScreen.route:(_)=>LoginScreen(),
         RegistrationScreen.route:(_)=>RegistrationScreen(),
-        HomeScreen.route:(_)=>HomeScreen(),
+        HomeScreen.route:(_)=>ChangeNotifierProvider(
+            create: (_)=>HomeProvider(),
+            child: HomeScreen()),
         SplashScreen.route:(_)=>SplashScreen(),
       },
       initialRoute: SplashScreen.route,
