@@ -22,13 +22,27 @@ class _ListTabState extends State<ListTab> {
             focusDate: selectedDate,
             lastDate: DateTime.now().add(Duration(days: 365)),
             dayProps: EasyDayProps(
-              
               inactiveDayStyle: DayStyle(
                 borderRadius: 2,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: Colors.white
-                )
+                ),
+                dayNumStyle: TextStyle(
+                    color: AppColors.textColor,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold
+                ),
+                monthStrStyle: TextStyle(
+                    color: AppColors.textColor,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500
+                ),
+                dayStrStyle: TextStyle(
+                    color: AppColors.textColor,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500
+                ),
               ),
               activeDayStyle: DayStyle(
                 dayNumStyle: TextStyle(
