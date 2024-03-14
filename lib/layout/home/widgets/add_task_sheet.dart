@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_app/layout/home/provider/home_provider.dart';
 import 'package:todo_app/shared/reusable_components/custom_form_field.dart';
 
 class AddTaskSheet extends StatefulWidget {
   void Function() onCancel;
-  AddTaskSheet({required this.onCancel});
+  TextEditingController titleController;
+  TextEditingController descController;
+  GlobalKey<FormState> formKey;
+
+  AddTaskSheet({required this.onCancel,required this.titleController,required this.descController,required this.formKey});
 
   @override
   State<AddTaskSheet> createState() => _AddTaskSheetState();
@@ -11,23 +17,16 @@ class AddTaskSheet extends StatefulWidget {
 
 class _AddTaskSheetState extends State<AddTaskSheet> {
 
-  TextEditingController titleController = TextEditingController();
-
-  TextEditingController descController = TextEditingController();
-
-  GlobalKey<FormState> formKey = GlobalKey();
-
-  DateTime? selectedDate;
-
   @override
   Widget build(BuildContext context) {
+    HomeProvider provider = Provider.of<HomeProvider>(context);
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(50),
       ),
       child: Form(
-        key: formKey,
+        key: widget.formKey,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -36,7 +35,7 @@ class _AddTaskSheetState extends State<AddTaskSheet> {
               Text("Create New Task",style: Theme.of(context).textTheme.titleMedium,),
               SizedBox(height: 20,),
               CustomFormField(
-                controller: titleController,
+                controller: widget.titleController,
                 lable: "Enter Task Title",
                 keyboard: TextInputType.text,
                 validator: (value){
@@ -48,7 +47,7 @@ class _AddTaskSheetState extends State<AddTaskSheet> {
               ),
               SizedBox(height: 10,),
               CustomFormField(
-                controller: descController,
+                controller: widget.descController,
                 lable: "Enter Task Description",
                 keyboard: TextInputType.multiline,
                 validator: (value){
@@ -62,19 +61,20 @@ class _AddTaskSheetState extends State<AddTaskSheet> {
               SizedBox(height: 10,),
               InkWell(
                 onTap: ()async{
-                  selectedDate = await showDatePicker(
+                  DateTime? selectedDate = await showDatePicker(
                     context: context,
                     firstDate: DateTime.now(),
                     lastDate: DateTime.now().add(Duration(days: 365)),
                     initialDate: DateTime.now()
                   );
+                  provider.selectDate(selectedDate);
                   setState(() {
 
                   });
                 },
-                child: Text(selectedDate==null
+                child: Text(provider.selectedDate==null
                     ? "Select Date"
-                    : "${selectedDate?.day} / ${selectedDate?.month} / ${selectedDate?.year}",
+                    : "${provider.selectedDate?.day} / ${provider.selectedDate?.month} / ${provider.selectedDate?.year}",
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w400
                 ),),

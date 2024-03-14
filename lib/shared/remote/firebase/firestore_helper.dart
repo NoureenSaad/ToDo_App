@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:todo_app/model/firestore_task.dart';
 import 'package:todo_app/model/firestore_user.dart';
 
 class FirestoreHelper{
@@ -32,4 +33,24 @@ class FirestoreHelper{
     FirestoreUser? user = snapshot.data();
     return user;
   }
+
+  static CollectionReference<FirestoreTask> getTaskCollection(String userID){
+    var reference = getUserCollection().doc(userID).collection('Tasks').withConverter(
+        fromFirestore: (snapshot, options) => FirestoreTask.fromFirestore(snapshot.data()??{}),
+        toFirestore: (task,options)=> task.toFirstore()
+    );
+    return reference;
+  }
+
+  static Future<void> AddTask(FirestoreTask task, String userID)async{
+    var reference = getTaskCollection(userID);
+    var taskDocument = reference.doc();
+    task.id = taskDocument.id;
+    await taskDocument.set(task);
+  }
+
+  static GetTask(){
+
+  }
+
 }

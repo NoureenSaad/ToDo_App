@@ -6,7 +6,10 @@ import 'package:todo_app/layout/home/tabs/list_tab.dart';
 import 'package:todo_app/layout/home/tabs/settings_tab.dart';
 import 'package:todo_app/layout/home/widgets/add_task_sheet.dart';
 import 'package:todo_app/layout/login/login_screen.dart';
+import 'package:todo_app/model/firestore_task.dart';
+import 'package:todo_app/shared/dialog_utils.dart';
 import 'package:todo_app/shared/providers/auth_data_provider.dart';
+import 'package:todo_app/shared/remote/firebase/firestore_helper.dart';
 import 'package:todo_app/style/app_colors.dart';
  
 class HomeScreen extends StatefulWidget {
@@ -18,6 +21,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<Widget> tabs = [ListTab(),SettingsTab()];
+  TextEditingController titleController = TextEditingController();
+  TextEditingController descController = TextEditingController();
+  GlobalKey<FormState> formKey = GlobalKey();
 
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -31,13 +37,30 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: isKeyboardOpen? null : FloatingActionButton(
-        onPressed: (){
+        onPressed: ()async{
           if(!isSheetOpen){
             AddTaskBottomSheet(context);
             isSheetOpen = true;
           }else{
-            Navigator.pop(context);
-            isSheetOpen = false;
+            if((formKey.currentState?.validate()??false) && (homeProvider.selectedDate != null)){
+              await FirestoreHelper.AddTask(
+                  FirestoreTask(
+                      title: titleController.text,
+                      description: descController.text,
+                      date: homeProvider.selectedDate?.millisecondsSinceEpoch),
+                  provider.firebaseUserAuth!.uid
+              );
+              DialogUtils.showMessage(
+                context: context,
+                message: "Task Is Added Successfully",
+                positiveText: "OK",
+                positivePress: (){
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                }
+              );
+              isSheetOpen = false;
+            }
           }
           setState(() {
 
@@ -108,6 +131,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
             });
           },
+          titleController: titleController,
+          descController: descController,
+          formKey: formKey,
         ),
     );
   }
