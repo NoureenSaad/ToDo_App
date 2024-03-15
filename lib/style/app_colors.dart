@@ -5,5 +5,6 @@ class AppColors{
   static const backgroundColor = Color(0xffDFECDB);
   static const unselectedItemColor = Color(0xffC8C9CB);
   static const textColor = Color(0xff383838);
+  static const timeColor = Color(0xff363636);
 
 }

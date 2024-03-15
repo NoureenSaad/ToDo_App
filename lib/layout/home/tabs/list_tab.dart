@@ -1,5 +1,7 @@
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
+import 'package:todo_app/layout/home/widgets/task_widget.dart';
+import 'package:todo_app/model/firestore_task.dart';
 import 'package:todo_app/style/app_colors.dart';
 
 class ListTab extends StatefulWidget {
@@ -72,6 +74,18 @@ class _ListTabState extends State<ListTab> {
                 selectedDate = newSelectedDate;
               });
             },
+          ),
+        ),
+        Expanded(
+          child: ListView.builder(
+            itemBuilder: (context,index)=>TaskWidget(
+              task: FirestoreTask(
+                  title: "Play Football",
+                  description: "",
+                  date: DateTime.now().millisecondsSinceEpoch
+              ),
+            ),
+            itemCount: 6,
           ),
         )
       ],

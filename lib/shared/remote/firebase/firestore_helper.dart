@@ -49,8 +49,10 @@ class FirestoreHelper{
     await taskDocument.set(task);
   }
 
-  static GetTask(){
-
+  static Future<List<FirestoreTask>> GetAllTasks(String userID)async{
+    var taskQuery = await getTaskCollection(userID).get();
+    List<FirestoreTask> tasksList = taskQuery.docs.map((snapshot) => snapshot.data()).toList();
+    return tasksList;
   }
 
 }

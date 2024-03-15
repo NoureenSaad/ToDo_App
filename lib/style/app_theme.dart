@@ -20,11 +20,20 @@ class AppTheme{
       primary: AppColors.primaryLightColor,),
     useMaterial3: false,
     textTheme: TextTheme(
+      titleSmall: TextStyle(
+          color: AppColors.timeColor,
+          fontWeight: FontWeight.w600,
+          fontSize: 14
+      ),
+      titleLarge: TextStyle(
+          color: AppColors.primaryLightColor,
+          fontWeight: FontWeight.w600,
+          fontSize: 20
+      ),
       titleMedium: TextStyle(
         color: AppColors.textColor,
         fontWeight: FontWeight.w600,
         fontSize: 20
-
       )
     )
 
